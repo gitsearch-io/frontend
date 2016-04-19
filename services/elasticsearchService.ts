@@ -1,25 +1,19 @@
-import elasticsearch = require('elasticsearch');
+import {getConnection} from '../connections/elasticsearchConnection';
 
-export class ElasticSearchService {
-    
-    public search(query:string, url:string) {
-        let client = new elasticsearch.Client({
-            host: 'localhost:9200',
-            log: 'trace'
-        });
-         return client.search({
-            index: 'gitsearch',
-            type: 'codefile',
-            body: {
-                query: {
-                    bool: {
-                        must: [
-                            {term: {url: url}},
-                            {match: {content:query}}
-                        ]
-                    }
+export function search(query:string, url:string) {
+    let client = getConnection();
+    return client.search({
+        index: 'gitsearch',
+        type: 'codefile',
+        body: {
+            query: {
+                bool: {
+                    must: [
+                        {term: {url: url}},
+                        {match: {content:query}}
+                    ]
                 }
             }
-        });  
-    }
+        }
+    });  
 }
